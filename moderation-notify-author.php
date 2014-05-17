@@ -21,7 +21,7 @@ function ald_mna($comment_id) {
 	global $wpdb;
 
 	$mna_settings = mna_read_options();
-	if( !$mna_settings[moderate_author] ) return true; // Exit if option disabled
+	if( !$mna_settings['moderate_author'] ) return true; // Exit if option disabled
 
 	$comment = get_comment($comment_id);
 	if( '0' != $comment->comment_approved ) return true; // Exit if comment is approved
@@ -50,7 +50,7 @@ function ald_mna($comment_id) {
 	$notify_message .= sprintf( __('Currently %s comments are waiting for approval. Please visit the moderation panel:'), $comments_waiting ) . "\r\n";
 	$notify_message .= "$siteurl/wp-admin/moderation.php\r\n";
 	
-	if ($mna_settings[addcredit]) $notify_message .= "\r\n\r\n" . sprintf( __('Email notification sent by ') ) . "Moderation Notify Author. Download from http://ajaydsouza.com/wordpress/plugins/moderation-notify-author/\r\n";
+	if ($mna_settings['addcredit']) $notify_message .= "\r\n\r\n" . sprintf( __('Email notification sent by ') ) . "Moderation Notify Author. Download from http://ajaydsouza.com/wordpress/plugins/moderation-notify-author/\r\n";
 
 	$subject = sprintf( __('[%1$s] Please moderate: "%2$s"'), get_option('blogname'), $post->post_title );
 
@@ -68,7 +68,7 @@ add_action('comment_post', 'ald_mna');
 function mna_default_options() {
 	$mna_settings = 	Array (
 						moderate_author => true,		// Moderate author
-						addcredit => true		// Moderate author
+						addcredit => true,		// Add Credit
 						);
 	return $mna_settings;
 }
@@ -88,8 +88,9 @@ function mna_read_options()
 			$mna_settings[$k] = $v;
 		$mna_settings_changed = true;	
 	}
-	if ($mna_settings_changed == true)
+	if ($mna_settings_changed == true) {
 		update_option('ald_mna_settings', $mna_settings);
+	}
 	
 	return $mna_settings;
 
